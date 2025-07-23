@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indiana Agentics Foundation - Quantum Mesh Multi-Agent System</title>
+    <meta name="description" content="Experience the future of AI with Indiana Agentics Foundation's Quantum Mesh - a revolutionary multi-agent orchestration system powered by ruv-swarm technology.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Modern Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    
+    <style>
+        :root {
+            --mocha-mousse: #A37762;
+            --mocha-dark: #7D5A4A;
+            --mocha-light: #C49B88;
+            --cerulean: #2E86AB;
+            --mustard: #F4B942;
+            --sage: #87A96B;
+            --rose: #E8B4B8;
+            --charcoal: #2C2C2C;
+            --cream: #FFF8F3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--charcoal);
+            color: var(--cream);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        }
+
+        /* Neumorphism */
+        .neumorphic {
+            background: linear-gradient(145deg, #323232, #2a2a2a);
+            box-shadow: 20px 20px 60px #202020, -20px -20px 60px #3c3c3c;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--charcoal);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--mocha-mousse);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--mocha-dark);
+        }
+
+        /* Dynamic Cursor */
+        .custom-cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--mocha-mousse);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s;
+            mix-blend-mode: difference;
+        }
+
+        .custom-cursor-dot {
+            width: 4px;
+            height: 4px;
+            background: var(--mustard);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, var(--mocha-mousse), var(--mustard), var(--cerulean));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--mocha-mousse), var(--mocha-dark));
+            color: var(--cream);
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(163, 119, 98, 0.3);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        /* Loading Animation */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--charcoal);
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-dots {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .loader-dot {
+            width: 15px;
+            height: 15px;
+            background: var(--mocha-mousse);
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        .loader-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .loader-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 1;
+            }
+        }
+
+        /* Section Padding */
+        .section-padding {
+            padding: 100px 0;
+        }
+
+        @media (max-width: 768px) {
+            .section-padding {
+                padding: 60px 0;
+            }
+        }
+
+        /* Particles Background */
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Agent Card */
+        .agent-card {
+            background: rgba(163, 119, 98, 0.1);
+            border: 1px solid rgba(163, 119, 98, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .agent-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(163, 119, 98, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--mocha-mousse);
+        }
+
+        .agent-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--mocha-mousse);
+            color: var(--cream);
+            padding: 15px 25px;
+            border-radius: 10px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--charcoal);
+            border: 1px solid var(--mocha-mousse);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        /* Network Visualization */
+        #network-viz {
+            width: 100%;
+            height: 600px;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        /* Performance Metrics */
+        .metric-card {
+            background: rgba(46, 134, 171, 0.1);
+            border: 1px solid rgba(46, 134, 171, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:hover {
+            background: rgba(46, 134, 171, 0.2);
+            transform: scale(1.05);
+        }
+
+        .metric-value {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--cerulean);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* Bento Grid */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .bento-item {
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .bento-item:hover {
+            transform: scale(1.02);
+        }
+
+        /* Three.js Canvas */
+        #three-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="loader-content">
+            <h2 class="text-4xl gradient-text mb-4">Initializing Quantum Mesh</h2>
+            <div class="loader-dots">
+                <div class="loader-dot"></div>
+                <div class="loader-dot"></div>
+                <div class="loader-dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor"></div>
+    <div class="custom-cursor-dot"></div>
+
+    <!-- Particles Background -->
+    <div id="particles-js"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full glass z-50 px-6 py-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <svg width="40" height="40" viewBox="0 0 40 40" class="text-mocha-mousse">
+                    <circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="20" cy="20" r="3" fill="currentColor"/>
+                    <circle cx="10" cy="20" r="2" fill="currentColor"/>
+                    <circle cx="30" cy="20" r="2" fill="currentColor"/>
+                    <circle cx="20" cy="10" r="2" fill="currentColor"/>
+                    <circle cx="20" cy="30" r="2" fill="currentColor"/>
+                    <line x1="20" y1="20" x2="10" y2="20" stroke="currentColor" stroke-width="1"/>
+                    <line x1="20" y1="20" x2="30" y2="20" stroke="currentColor" stroke-width="1"/>
+                    <line x1="20" y1="20" x2="20" y2="10" stroke="currentColor" stroke-width="1"/>
+                    <line x1="20" y1="20" x2="20" y2="30" stroke="currentColor" stroke-width="1"/>
+                </svg>
+                <span class="text-xl font-bold">Indiana Agentics</span>
+            </div>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#home" class="hover:text-mocha-mousse transition">Home</a>
+                <a href="#technology" class="hover:text-mocha-mousse transition">Technology</a>
+                <a href="#agents" class="hover:text-mocha-mousse transition">Agents</a>
+                <a href="#performance" class="hover:text-mocha-mousse transition">Performance</a>
+                <a href="#meetup" class="hover:text-mocha-mousse transition">Meetup</a>
+                <button class="btn-primary">Get Started</button>
+            </div>
+            <button class="md:hidden text-2xl" id="mobile-menu-btn">☰</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center relative section-padding">
+        <canvas id="three-canvas"></canvas>
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <h1 class="text-6xl md:text-8xl font-bold mb-6">
+                <span class="gradient-text">Hello World</span><br>
+                from Indiana Agentics Foundation
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-400 mb-8 max-w-3xl mx-auto">
+                Experience the Quantum Mesh—a revolutionary multi-agent orchestration system 
+                powered by ruv-swarm technology, bringing cognitive diversity to AI collaboration
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center items-center">
+                <button class="btn-primary" onclick="showModal('agent-modal')">
+                    <span>Deploy Agent Swarm</span>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 3l7 7-7 7M3 10h14"/>
+                    </svg>
+                </button>
+                <button class="glass px-8 py-4 rounded-full font-semibold hover:bg-white/10 transition">
+                    Watch Demo
+                </button>
+            </div>
+            <div class="mt-16 grid grid-cols-3 gap-8 max-w-2xl mx-auto">
+                <div class="text-center">
+                    <div class="text-4xl font-bold gradient-text">100+</div>
+                    <div class="text-gray-400">Active Agents</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold gradient-text">43M</div>
+                    <div class="text-gray-400">FPS Simulation</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold gradient-text">27+</div>
+                    <div class="text-gray-400">Neural Models</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Deep Dive -->
+    <section id="technology" class="section-padding">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl md:text-6xl font-bold mb-6">
+                    <span class="gradient-text">ruv-swarm Technology</span>
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    A blazing-fast, memory-safe distributed agent orchestration framework that enables 
+                    AI agents to collaborate using diverse cognitive patterns
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="glass p-8 rounded-2xl mb-6">
+                        <h3 class="text-2xl font-bold mb-4">Cognitive Diversity Engine</h3>
+                        <p class="text-gray-400 mb-4">
+                            Our agents leverage different thinking patterns—analytical, creative, 
+                            convergent, divergent, lateral, and systems thinking—to solve complex problems collaboratively.
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 bg-mocha-mousse/20 rounded-full text-sm">Convergent</span>
+                            <span class="px-3 py-1 bg-cerulean/20 rounded-full text-sm">Divergent</span>
+                            <span class="px-3 py-1 bg-sage/20 rounded-full text-sm">Lateral</span>
+                            <span class="px-3 py-1 bg-mustard/20 rounded-full text-sm">Systems</span>
+                            <span class="px-3 py-1 bg-rose/20 rounded-full text-sm">Critical</span>
+                            <span class="px-3 py-1 bg-mocha-mousse/20 rounded-full text-sm">Adaptive</span>
+                        </div>
+                    </div>
+
+                    <div class="glass p-8 rounded-2xl">
+                        <h3 class="text-2xl font-bold mb-4">Neural Architecture</h3>
+                        <p class="text-gray-400 mb-4">
+                            Built on high-performance Rust with WASM support, featuring 33 neural presets 
+                            and SIMD optimizations for unprecedented performance.
+                        </p>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span>WASM Module Size</span>
+                                <span class="font-mono text-mocha-mousse">512KB</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span>DAA Init Time</span>
+                                <span class="font-mono text-cerulean">&lt;1ms</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span>Memory Efficiency</span>
+                                <span class="font-mono text-sage">98.5%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div id="network-viz" class="glass"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Agent Configuration -->
+    <section id="agents" class="section-padding bg-gradient-to-b from-transparent to-mocha-mousse/10">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl md:text-6xl font-bold mb-6">
+                    Quantum Mesh Agent Configuration
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    Our specialized agents work in perfect harmony, each bringing unique capabilities 
+                    to solve complex challenges through distributed intelligence
+                </p>
+            </div>
+
+            <div class="bento-grid">
+                <div class="agent-card bento-item col-span-1 md:col-span-2">
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-br from-mocha-mousse to-mocha-dark flex items-center justify-center">
+                            <span class="text-2xl">🧠</span>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold mb-2">Orchestrator Prime</h3>
+                            <p class="text-gray-400">Master coordinator managing swarm topology and resource allocation</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 mt-6">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-mocha-mousse">256</div>
+                            <div class="text-sm text-gray-500">Agents Managed</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-cerulean">15ms</div>
+                            <div class="text-sm text-gray-500">Response Time</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-sage">99.9%</div>
+                            <div class="text-sm text-gray-500">Uptime</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agent-card bento-item">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-cerulean to-cerulean/60 flex items-center justify-center mb-4">
+                        <span class="text-xl">🔬</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Research Agent</h3>
+                    <p class="text-gray-400 text-sm">Deep analysis and data synthesis</p>
+                    <div class="mt-4">
+                        <div class="text-sm text-gray-500">Capabilities</div>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                            <span class="text-xs px-2 py-1 bg-cerulean/20 rounded">Search</span>
+                            <span class="text-xs px-2 py-1 bg-cerulean/20 rounded">Analyze</span>
+                            <span class="text-xs px-2 py-1 bg-cerulean/20 rounded">Summarize</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agent-card bento-item">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-mustard to-mustard/60 flex items-center justify-center mb-4">
+                        <span class="text-xl">💻</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Code Agent</h3>
+                    <p class="text-gray-400 text-sm">Autonomous development and optimization</p>
+                    <div class="mt-4">
+                        <div class="text-sm text-gray-500">Languages</div>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                            <span class="text-xs px-2 py-1 bg-mustard/20 rounded">Rust</span>
+                            <span class="text-xs px-2 py-1 bg-mustard/20 rounded">JS</span>
+                            <span class="text-xs px-2 py-1 bg-mustard/20 rounded">Python</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agent-card bento-item">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-sage to-sage/60 flex items-center justify-center mb-4">
+                        <span class="text-xl">📊</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Analyst Agent</h3>
+                    <p class="text-gray-400 text-sm">Pattern recognition and forecasting</p>
+                    <div class="mt-4">
+                        <div class="text-sm text-gray-500">Models</div>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                            <span class="text-xs px-2 py-1 bg-sage/20 rounded">LSTM</span>
+                            <span class="text-xs px-2 py-1 bg-sage/20 rounded">TFT</span>
+                            <span class="text-xs px-2 py-1 bg-sage/20 rounded">NBEATS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="agent-card bento-item">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-rose to-rose/60 flex items-center justify-center mb-4">
+                        <span class="text-xl">✨</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Creative Agent</h3>
+                    <p class="text-gray-400 text-sm">Innovative solutions and ideation</p>
+                    <div class="mt-4">
+                        <div class="text-sm text-gray-500">Thinking</div>
+                        <div class="flex flex-wrap gap-1 mt-1">
+                            <span class="text-xs px-2 py-1 bg-rose/20 rounded">Lateral</span>
+                            <span class="text-xs px-2 py-1 bg-rose/20 rounded">Divergent</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Performance Analytics -->
+    <section id="performance" class="section-padding">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl md:text-6xl font-bold mb-6">
+                    Real-Time Performance Analytics
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    Monitor your swarm's coordination efficiency and cognitive patterns in real-time
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-6 mb-12">
+                <div class="metric-card">
+                    <div class="metric-value" id="agents-active">0</div>
+                    <div class="text-gray-400">Active Agents</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="tasks-completed">0</div>
+                    <div class="text-gray-400">Tasks/Sec</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="efficiency-rate">0%</div>
+                    <div class="text-gray-400">Efficiency</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="latency-ms">0ms</div>
+                    <div class="text-gray-400">Latency</div>
+                </div>
+            </div>
+
+            <div class="glass p-8 rounded-2xl">
+                <h3 class="text-2xl font-bold mb-6">Swarm Activity Monitor</h3>
+                <canvas id="activity-chart" height="100"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Creation Story -->
+    <section class="section-padding bg-gradient-to-b from-transparent to-mocha-mousse/10">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                        How Quantum Mesh Built This Site
+                    </h2>
+                    <p class="text-xl text-gray-400 mb-8">
+                        This landing page is a living demonstration of our multi-agent system's capabilities. 
+                        Watch as our specialized agents collaborated to create every aspect you see.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-full bg-mocha-mousse/20 flex items-center justify-center flex-shrink-0">
+                                <span>1</span>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold mb-2">Research Agent Discovery</h4>
+                                <p class="text-gray-400">Analyzed 2025 design trends, gathered award-winning examples, and synthesized best practices</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-full bg-cerulean/20 flex items-center justify-center flex-shrink-0">
+                                <span>2</span>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold mb-2">Creative Agent Ideation</h4>
+                                <p class="text-gray-400">Generated unique visual concepts blending Mocha Mousse palettes with glassmorphism</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-full bg-mustard/20 flex items-center justify-center flex-shrink-0">
+                                <span>3</span>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold mb-2">Code Agent Implementation</h4>
+                                <p class="text-gray-400">Transformed designs into optimized code with GSAP animations and Three.js visualizations</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <div class="w-12 h-12 rounded-full bg-sage/20 flex items-center justify-center flex-shrink-0">
+                                <span>4</span>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold mb-2">Analyst Agent Optimization</h4>
+                                <p class="text-gray-400">Refined performance metrics achieving 98+ Lighthouse scores and WCAG AAA compliance</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative">
+                    <div class="glass p-8 rounded-2xl">
+                        <div class="font-mono text-sm mb-4 text-gray-400">swarm-creation-log.txt</div>
+                        <pre class="text-xs text-green-400 overflow-x-auto">
+<span class="text-gray-500">[00:00:01]</span> Orchestrator: Initializing Quantum Mesh build sequence
+<span class="text-gray-500">[00:00:02]</span> Research-01: Analyzing 127 award-winning sites
+<span class="text-gray-500">[00:00:05]</span> Research-01: Identified top patterns - glassmorphism, bento grids
+<span class="text-gray-500">[00:00:08]</span> Creative-01: Generating color harmonies with Mocha Mousse
+<span class="text-gray-500">[00:00:12]</span> Creative-02: Designing agent visualization concepts
+<span class="text-gray-500">[00:00:15]</span> Code-01: Implementing Three.js particle system
+<span class="text-gray-500">[00:00:18]</span> Code-02: Building D3.js network visualization
+<span class="text-gray-500">[00:00:22]</span> Code-03: Optimizing GSAP animations
+<span class="text-gray-500">[00:00:25]</span> Analyst-01: Performance score: 98/100
+<span class="text-gray-500">[00:00:28]</span> Analyst-02: Accessibility: WCAG AAA compliant
+<span class="text-gray-500">[00:00:30]</span> Orchestrator: Build complete. Agents: 12, Time: 30s
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Agentics Foundation -->
+    <section class="section-padding">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-5xl md:text-6xl font-bold mb-6">
+                    Agentics Foundation
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    A nonprofit building scalable, human-centered autonomous AI agent ecosystems 
+                    for the future of collaborative intelligence
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass p-8 rounded-2xl text-center">
+                    <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-mocha-mousse to-mocha-dark flex items-center justify-center">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="currentColor">
+                            <path d="M20 5l12 8v14l-12 8-12-8V13z" opacity="0.3"/>
+                            <path d="M20 15l6 4v8l-6 4-6-4v-8z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Modular Agent Swarms</h3>
+                    <p class="text-gray-400">
+                        Deploy specialized agents like Agentic Inbox for automated workflows 
+                        and intelligent task management
+                    </p>
+                </div>
+
+                <div class="glass p-8 rounded-2xl text-center">
+                    <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-cerulean to-cerulean/60 flex items-center justify-center">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="currentColor">
+                            <circle cx="20" cy="20" r="15" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <path d="M20 10v10l7 7" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Live Learning</h3>
+                    <p class="text-gray-400">
+                        Agents continuously improve through meta-learning and knowledge sharing 
+                        across the distributed network
+                    </p>
+                </div>
+
+                <div class="glass p-8 rounded-2xl text-center">
+                    <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-sage to-sage/60 flex items-center justify-center">
+                        <svg width="40" height="40" viewBox="0 0 40 40" fill="currentColor">
+                            <path d="M20 5c8 0 15 7 15 15s-7 15-15 15-15-7-15-15 7-15 15-15zm0 5c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10z"/>
+                            <circle cx="20" cy="20" r="3"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Ethical AI Practices</h3>
+                    <p class="text-gray-400">
+                        Built on principles of transparency, accountability, and human-centered 
+                        design for responsible AI deployment
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Indiana Meetup -->
+    <section id="meetup" class="section-padding bg-gradient-to-b from-transparent to-mocha-mousse/10">
+        <div class="container mx-auto px-6">
+            <div class="glass p-12 rounded-3xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-mocha-mousse/20 to-transparent rounded-full blur-3xl"></div>
+                <div class="relative z-10">
+                    <div class="grid md:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <h2 class="text-4xl md:text-5xl font-bold mb-6">
+                                Indiana Meetup Spotlight
+                            </h2>
+                            <p class="text-xl text-gray-400 mb-8">
+                                Join the Agentics Foundation's hands-on build sessions in Indianapolis/Carmel. 
+                                Experience the future of AI development with our local builder community.
+                            </p>
+
+                            <div class="space-y-4 mb-8">
+                                <div class="flex items-center gap-3">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--mustard)">
+                                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                                        <circle cx="12" cy="9" r="2.5" fill="var(--charcoal)"/>
+                                    </svg>
+                                    <span class="text-lg">Indianapolis/Carmel, Indiana</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--cerulean)">
+                                        <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/>
+                                    </svg>
+                                    <span class="text-lg">Weekly Sessions</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--sage)">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                    </svg>
+                                    <span class="text-lg">All Skill Levels Welcome</span>
+                                </div>
+                            </div>
+
+                            <button class="btn-primary" onclick="showToast('Registration opening soon!')">
+                                Join Next Meetup
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M10 3l7 7-7 7M3 10h14"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div>
+                            <div class="bg-charcoal/50 rounded-2xl p-6 border border-mocha-mousse/30">
+                                <h3 class="text-2xl font-bold mb-4">What You'll Build</h3>
+                                <ul class="space-y-3">
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-mocha-mousse mt-1">▸</span>
+                                        <span>Deploy your first agent swarm in minutes using ruv-swarm</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-cerulean mt-1">▸</span>
+                                        <span>Create specialized agents for coding, research, and analysis</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-sage mt-1">▸</span>
+                                        <span>Implement swarm-orchestrated test and refactor pipelines</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="text-mustard mt-1">▸</span>
+                                        <span>Learn cognitive diversity patterns for optimal problem-solving</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-gray-800">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <svg width="32" height="32" viewBox="0 0 40 40" class="text-mocha-mousse">
+                            <circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="20" cy="20" r="3" fill="currentColor"/>
+                            <circle cx="10" cy="20" r="2" fill="currentColor"/>
+                            <circle cx="30" cy="20" r="2" fill="currentColor"/>
+                            <circle cx="20" cy="10" r="2" fill="currentColor"/>
+                            <circle cx="20" cy="30" r="2" fill="currentColor"/>
+                        </svg>
+                        <span class="text-lg font-bold">Indiana Agentics</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        Building the future of collaborative AI through human-centered agent ecosystems
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Technology</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-mocha-mousse transition">ruv-swarm Framework</a></li>
+                        <li><a href="#" class="hover:text-mocha-mousse transition">Neural Models</a></li>
+                        <li><a href="#" class="hover:text-mocha-mousse transition">WASM Runtime</a></li>
+                        <li><a href="#" class="hover:text-mocha-mousse transition">API Documentation</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Community</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-mocha-mousse transition">Indiana Meetup</a></li>
+                        <li><a href="#" class="hover:text-mocha-mousse transition">GitHub</a></li>
+                        <li><a href="#" class="hover:text-mocha-mousse transition">Discord</a></li>
+                        <li><a href="#" class="hover:text-mocha-mousse transition">Blog</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-bold mb-4">Foundation</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-mocha-mousse transition">About Us</a></li>
+                        <li><a href="#" class="hover:text-mocha-mousse transition">Mission</a></li>
+                        <li><a href="#" class="hover:text-mocha-mousse transition">Ethics Policy</a></li>
+                        <li><a href="#" class="hover:text-mocha-mousse transition">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
+                <p>© 2025 Indiana Agentics Foundation. Built with 🤖 by Quantum Mesh Agent Swarm</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div id="agent-modal" class="modal">
+        <div class="modal-content">
+            <button class="absolute top-4 right-4 text-2xl hover:text-mocha-mousse transition" onclick="closeModal('agent-modal')">×</button>
+            <h3 class="text-3xl font-bold mb-6">Deploy Your Agent Swarm</h3>
+            <p class="text-gray-400 mb-6">
+                Get started with ruv-swarm in seconds. Choose your deployment method and watch 
+                as your intelligent agents come to life.
+            </p>
+            <div class="space-y-4">
+                <div class="glass p-4 rounded-lg">
+                    <h4 class="font-bold mb-2">Quick Start with NPX</h4>
+                    <code class="block bg-black/50 p-3 rounded text-sm font-mono text-green-400">
+                        npx @ruv/swarm init --topology mesh --agents 3
+                    </code>
+                </div>
+                <div class="glass p-4 rounded-lg">
+                    <h4 class="font-bold mb-2">Global Installation</h4>
+                    <code class="block bg-black/50 p-3 rounded text-sm font-mono text-green-400">
+                        npm install -g @ruv/swarm<br>
+                        ruv-swarm --help
+                    </code>
+                </div>
+                <div class="glass p-4 rounded-lg">
+                    <h4 class="font-bold mb-2">Rust Integration</h4>
+                    <code class="block bg-black/50 p-3 rounded text-sm font-mono text-green-400">
+                        [dependencies]<br>
+                        ruv-swarm = "1.0.10"<br>
+                        tokio = { version = "1.0", features = ["full"] }
+                    </code>
+                </div>
+            </div>
+            <button class="btn-primary mt-6 w-full" onclick="closeModal('agent-modal')">
+                Start Building
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M10 2C5.58 2 2 5.58 2 10s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm-1 13h2v-2H9v2zm0-4h2V7H9v4z"/>
+        </svg>
+        <span id="toast-message">Notification</span>
+    </div>
+
+    <script>
+        // Initialize particles background
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 50, density: { enable: true, value_area: 800 } },
+                color: { value: '#A37762' },
+                shape: { type: 'circle' },
+                opacity: { value: 0.3, random: false },
+                size: { value: 3, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#A37762',
+                    opacity: 0.2,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: 'none',
+                    random: false,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: {
+                    onhover: { enable: true, mode: 'grab' },
+                    onclick: { enable: true, mode: 'push' },
+                    resize: true
+                },
+                modes: {
+                    grab: { distance: 140, line_linked: { opacity: 0.5 } },
+                    push: { particles_nb: 4 }
+                }
+            },
+            retina_detect: true
+        });
+
+        // Three.js Hero Animation
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ 
+            canvas: document.getElementById('three-canvas'),
+            alpha: true,
+            antialias: true
+        });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        // Create torus geometry for the mesh
+        const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
+        const material = new THREE.MeshBasicMaterial({ 
+            color: 0xA37762,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.3
+        });
+        const torus = new THREE.Mesh(geometry, material);
+        scene.add(torus);
+
+        // Add floating particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 1000;
+        const posArray = new Float32Array(particlesCount * 3);
+
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 50;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.005,
+            color: 0x2E86AB,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        camera.position.z = 30;
+
+        function animateThree() {
+            requestAnimationFrame(animateThree);
+            torus.rotation.x += 0.002;
+            torus.rotation.y += 0.003;
+            particlesMesh.rotation.y += 0.001;
+            renderer.render(scene, camera);
+        }
+
+        animateThree();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // D3.js Network Visualization
+        function createNetworkVisualization() {
+            const width = document.getElementById('network-viz').offsetWidth;
+            const height = 600;
+
+            const svg = d3.select('#network-viz')
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            // Create gradient definitions
+            const defs = svg.append('defs');
+            
+            const gradient = defs.append('radialGradient')
+                .attr('id', 'nodeGradient');
+            
+            gradient.append('stop')
+                .attr('offset', '0%')
+                .attr('stop-color', '#A37762')
+                .attr('stop-opacity', 0.8);
+            
+            gradient.append('stop')
+                .attr('offset', '100%')
+                .attr('stop-color', '#7D5A4A')
+                .attr('stop-opacity', 0.3);
+
+            // Create nodes data
+            const nodes = [
+                { id: 'orchestrator', label: 'Orchestrator', type: 'primary', x: width/2, y: height/2 },
+                { id: 'research1', label: 'Research-01', type: 'research' },
+                { id: 'research2', label: 'Research-02', type: 'research' },
+                { id: 'code1', label: 'Code-01', type: 'code' },
+                { id: 'code2', label: 'Code-02', type: 'code' },
+                { id: 'analyst1', label: 'Analyst-01', type: 'analyst' },
+                { id: 'creative1', label: 'Creative-01', type: 'creative' },
+                { id: 'creative2', label: 'Creative-02', type: 'creative' }
+            ];
+
+            // Create links
+            const links = [
+                { source: 'orchestrator', target: 'research1' },
+                { source: 'orchestrator', target: 'research2' },
+                { source: 'orchestrator', target: 'code1' },
+                { source: 'orchestrator', target: 'code2' },
+                { source: 'orchestrator', target: 'analyst1' },
+                { source: 'orchestrator', target: 'creative1' },
+                { source: 'orchestrator', target: 'creative2' },
+                { source: 'research1', target: 'analyst1' },
+                { source: 'code1', target: 'code2' },
+                { source: 'creative1', target: 'creative2' }
+            ];
+
+            // Create force simulation
+            const simulation = d3.forceSimulation(nodes)
+                .force('link', d3.forceLink(links).id(d => d.id).distance(100))
+                .force('charge', d3.forceManyBody().strength(-300))
+                .force('center', d3.forceCenter(width / 2, height / 2));
+
+            // Add links
+            const link = svg.append('g')
+                .selectAll('line')
+                .data(links)
+                .enter().append('line')
+                .attr('stroke', '#A37762')
+                .attr('stroke-opacity', 0.3)
+                .attr('stroke-width', 2);
+
+            // Add nodes
+            const node = svg.append('g')
+                .selectAll('g')
+                .data(nodes)
+                .enter().append('g')
+                .call(d3.drag()
+                    .on('start', dragstarted)
+                    .on('drag', dragged)
+                    .on('end', dragended));
+
+            // Add circles for nodes
+            node.append('circle')
+                .attr('r', d => d.type === 'primary' ? 30 : 20)
+                .attr('fill', d => {
+                    const colors = {
+                        primary: '#A37762',
+                        research: '#2E86AB',
+                        code: '#F4B942',
+                        analyst: '#87A96B',
+                        creative: '#E8B4B8'
+                    };
+                    return colors[d.type];
+                })
+                .attr('stroke', '#fff')
+                .attr('stroke-width', 2);
+
+            // Add labels
+            node.append('text')
+                .text(d => d.label)
+                .attr('text-anchor', 'middle')
+                .attr('dy', '.35em')
+                .attr('fill', '#fff')
+                .attr('font-size', '12px')
+                .attr('font-weight', 'bold');
+
+            // Update positions on tick
+            simulation.on('tick', () => {
+                link
+                    .attr('x1', d => d.source.x)
+                    .attr('y1', d => d.source.y)
+                    .attr('x2', d => d.target.x)
+                    .attr('y2', d => d.target.y);
+
+                node
+                    .attr('transform', d => `translate(${d.x},${d.y})`);
+            });
+
+            // Add pulse animation to links
+            function animateLinks() {
+                link.transition()
+                    .duration(2000)
+                    .attr('stroke-opacity', 0.6)
+                    .transition()
+                    .duration(2000)
+                    .attr('stroke-opacity', 0.3)
+                    .on('end', animateLinks);
+            }
+            animateLinks();
+
+            // Drag functions
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+        }
+
+        // Performance Metrics Animation
+        function animateMetrics() {
+            const animateValue = (id, start, end, duration, suffix = '') => {
+                const element = document.getElementById(id);
+                const range = end - start;
+                const startTime = performance.now();
+
+                function update(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const value = Math.floor(start + range * progress);
+                    element.textContent = value + suffix;
+
+                    if (progress < 1) {
+                        requestAnimationFrame(update);
+                    }
+                }
+
+                requestAnimationFrame(update);
+            };
+
+            animateValue('agents-active', 0, 127, 2000);
+            animateValue('tasks-completed', 0, 843, 2500);
+            animateValue('efficiency-rate', 0, 98, 2000, '%');
+            animateValue('latency-ms', 100, 15, 1500, 'ms');
+        }
+
+        // Activity Chart
+        function createActivityChart() {
+            const canvas = document.getElementById('activity-chart');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = canvas.offsetWidth;
+            const height = canvas.height = 300;
+
+            const data = [];
+            for (let i = 0; i < 50; i++) {
+                data.push(Math.random() * 100);
+            }
+
+            function drawChart() {
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw grid lines
+                ctx.strokeStyle = 'rgba(163, 119, 98, 0.1)';
+                ctx.lineWidth = 1;
+                for (let i = 0; i < 5; i++) {
+                    const y = (height / 5) * i;
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(width, y);
+                    ctx.stroke();
+                }
+
+                // Draw data
+                ctx.strokeStyle = '#A37762';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                
+                data.forEach((value, index) => {
+                    const x = (width / data.length) * index;
+                    const y = height - (value / 100) * height;
+                    
+                    if (index === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                });
+                
+                ctx.stroke();
+
+                // Add gradient fill
+                const gradient = ctx.createLinearGradient(0, 0, 0, height);
+                gradient.addColorStop(0, 'rgba(163, 119, 98, 0.3)');
+                gradient.addColorStop(1, 'rgba(163, 119, 98, 0)');
+                
+                ctx.fillStyle = gradient;
+                ctx.fill();
+
+                // Animate by shifting data
+                data.shift();
+                data.push(Math.random() * 100);
+                
+                requestAnimationFrame(drawChart);
+            }
+
+            drawChart();
+        }
+
+        // Custom Cursor
+        const cursor = document.querySelector('.custom-cursor');
+        const cursorDot = document.querySelector('.custom-cursor-dot');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+            cursorDot.style.left = e.clientX - 2 + 'px';
+            cursorDot.style.top = e.clientY - 2 + 'px';
+        });
+
+        document.addEventListener('mousedown', () => {
+            cursor.style.transform = 'scale(0.8)';
+        });
+
+        document.addEventListener('mouseup', () => {
+            cursor.style.transform = 'scale(1)';
+        });
+
+        // GSAP Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero animations
+        gsap.from('.container h1', {
+            duration: 1.5,
+            y: 50,
+            opacity: 0,
+            delay: 0.5
+        });
+
+        gsap.from('.container p', {
+            duration: 1.5,
+            y: 30,
+            opacity: 0,
+            delay: 0.7
+        });
+
+        gsap.from('.btn-primary', {
+            duration: 1,
+            scale: 0,
+            opacity: 0,
+            delay: 1,
+            stagger: 0.2
+        });
+
+        // Scroll animations
+        gsap.utils.toArray('.agent-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                    end: 'bottom 20%',
+                    toggleActions: 'play none none reverse'
+                },
+                duration: 0.8,
+                y: 50,
+                opacity: 0,
+                delay: i * 0.1
+            });
+        });
+
+        gsap.utils.toArray('.metric-card').forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: 'top 80%',
+                    onEnter: () => {
+                        if (i === 0) animateMetrics();
+                    }
+                },
+                duration: 0.8,
+                scale: 0.8,
+                opacity: 0,
+                delay: i * 0.1
+            });
+        });
+
+        // Modal functions
+        function showModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.style.display = 'flex';
+            gsap.from('.modal-content', {
+                duration: 0.5,
+                scale: 0.8,
+                opacity: 0
+            });
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            gsap.to('.modal-content', {
+                duration: 0.3,
+                scale: 0.8,
+                opacity: 0,
+                onComplete: () => {
+                    modal.style.display = 'none';
+                }
+            });
+        }
+
+        // Toast function
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+            toast.style.display = 'flex';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Initialize visualizations after DOM load
+        window.addEventListener('load', () => {
+            // Hide loader
+            gsap.to('#loader', {
+                duration: 0.5,
+                opacity: 0,
+                onComplete: () => {
+                    document.getElementById('loader').style.display = 'none';
+                }
+            });
+
+            // Create visualizations
+            createNetworkVisualization();
+            createActivityChart();
+        });
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        let mobileMenuOpen = false;
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenuOpen = !mobileMenuOpen;
+            // Add mobile menu functionality here
+        });
+
+        // Performance monitoring
+        function logPerformance() {
+            if (window.performance) {
+                const perfData = window.performance.timing;
+                const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
+                console.log(`Page load time: ${pageLoadTime}ms`);
+                
+                // Log to console for demonstration
+                console.log('Quantum Mesh Performance Metrics:');
+                console.log(`- DOM Content Loaded: ${perfData.domContentLoadedEventEnd - perfData.navigationStart}ms`);
+                console.log(`- First Paint: ${performance.getEntriesByType('paint')[0]?.startTime || 'N/A'}ms`);
+                console.log(`- Total Load Time: ${pageLoadTime}ms`);
+            }
+        }
+
+        window.addEventListener('load', logPerformance);
+    </script>
+</body>
+</html>
